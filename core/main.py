@@ -157,7 +157,7 @@ def main_logic():
             # If we didn't update everything we expected, and no harder error occurred yet
             patching_status = "partial"
             missing = num_upgradable - num_actually_updated
-            error_msgs.append(f"Mismatched update count: {missing} packages from the original list were not updated.")
+            error_msgs.append(f"Mismatched update count: {missing} packages from the original list were not updated, likely a phase rollout.")
 
         log_message(f"Successfully updated {num_actually_updated} packages.")
         
