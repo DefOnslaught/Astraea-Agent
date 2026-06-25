@@ -3,15 +3,24 @@ import os, sys
 from datetime import datetime
 from core import settings
 
-_log_file = settings.LOG_FILE
-_log_file_handle = None # To hold the open file object
+
+_LOGS_DIR = settings._BASE_DIR / "logs"
+_log_file = _LOGS_DIR / "patching.log"
+_LOG_FILE_MAX_MB = 5
+_log_file_handle = None
 
 def initialize_logger():
     """Checks the log file size, ensures it exists, adds happy starting message"""
     global _log_file_handle
+
+    try:
+        os.makedirs(_LOGS_DIR, exist_ok=True)
+    except Exception as e:
+        print(f"Error creating logs directory: {e}")
+
     try:
         file_size_bytes = os.path.getsize(_log_file)
-        max_bytes = 1024 * 1024 * settings.LOG_FILE_MAX_MB
+        max_bytes = 1024 * 1024 * _LOG_FILE_MAX_MB
         if file_size_bytes >= max_bytes:
             with open(_log_file, 'w') as file:
                 file.truncate(0)

@@ -3,9 +3,10 @@ from pathlib import Path
 from datetime import datetime
 
 _BASE_DIR = Path(__file__).resolve().parent.parent
+_LOGS_DIR = _BASE_DIR / "logs"
 _INIT_LOG_FILE_MAX_MB = 5
 
-_init_log_file = _BASE_DIR / "initialize.log"
+_init_log_file = _LOGS_DIR / "initialize.log"
 _init_log_file_handle = None
 
 # Enable Debug
@@ -14,6 +15,12 @@ DEBUG = False
 def init_initialize_logger():
     """Checks the log file size, ensures it exists"""
     global _init_log_file_handle
+
+    try:
+        os.makedirs(_LOGS_DIR, exist_ok=True)
+    except Exception as e:
+        print(f"Error creating logs directory: {e}")
+
     try:
         file_size_bytes = os.path.getsize(_init_log_file)
         max_bytes = 1024 * 1024 * _INIT_LOG_FILE_MAX_MB
