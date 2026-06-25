@@ -39,16 +39,6 @@ PATCH_SCHEDULE = os.getenv('PATCH_SCHEDULE')
 # Patch Environment (Prod, Pre-Prod, Dev)
 ENV = os.getenv('ENV')
 
-
-# --- Log File Settings ---
-
-# Path for the main log file
-LOG_FILE = _BASE_DIR / "patching.log"
-
-# Max size of log file in MB before it clears it
-LOG_FILE_MAX_MB = 5
-
-
 # --- Do not modify, helps keep the server identified, the uuid acts as a the 'true' source ---
 # Values are edited when 'install_agent.sh' from the webserver runs
 UUID = os.getenv('UUID')

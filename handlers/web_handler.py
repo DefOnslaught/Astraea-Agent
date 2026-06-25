@@ -15,6 +15,9 @@ def send_system_info():
     Sends system info to the Astraea Webserver.
     Used when there's no patching data to send
     """
+    if not BASE_URL or not API_KEY:
+        log_message(f"Missing BASE_URL or API_KEY in .env, skipping Astraea Webserver info upload")
+        return
 
     payload = {
         "server_id": UUID,
@@ -41,6 +44,11 @@ def send_patch_result(getting_rebooted=False, patching_status="success", errors=
     """
     Formats and sends the patching results to the Astraea Webserver.
     """
+
+    if not BASE_URL or not API_KEY:
+        log_message(f"Missing BASE_URL or API_KEY in .env, skipping Astraea Webserver info upload")
+        return
+
     if getting_rebooted:
         last_reboot = datetime.datetime.now(timezone.utc).isoformat()
     else:
@@ -110,6 +118,10 @@ def can_i_patch():
     """
     Checks if we are able to patch, default is True
     """
+
+    if not BASE_URL or not API_KEY:
+        log_message(f"Missing BASE_URL or API_KEY in .env, skipping Astraea Webserver check")
+        return True
 
     url = f"{BASE_URL.rstrip('/')}/api/servers/patching/can_i_patch/"
     headers = {"X-API-Key": API_KEY, "Content-Type": "application/json"}

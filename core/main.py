@@ -1,6 +1,5 @@
 import time, sys
 from pathlib import Path
-from datetime import datetime
 
 # Add the project root to the Python path
 _BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +22,7 @@ from util.system_info import get_distribution
 from util.run_command import run_command
 from util.simple_utils import calc_endtime
 from handlers.web_handler import send_patch_result, can_i_patch, send_system_info
+from core.settings import BASE_URL, API_KEY
 
 def main_logic():
     """Contains the core patching logic"""
@@ -41,11 +41,17 @@ def main_logic():
 
     try:
 
-        # Checks if we are allowed to patch
-        # Defaults to 'True' if we cannot get an answer
-        if not can_i_patch():
-            send_system_info()
-            stop_script_process("Patching is disabled as per Astraea Webserver - Stopping process", exit_code=0)
+        # Check if in standalone mode
+        standalone_mode = not BASE_URL or not API_KEY
+        
+        if standalone_mode:
+            log_message("Standalone mode detected: API_KEY/BASE_URL missing from .env, skipping Astraea Webserver sync.")
+        else:
+            # Checks if we are allowed to patch only if not in standalone mode
+            # Defaults to 'True' if we cannot get an answer
+            if not can_i_patch():
+                send_system_info()
+                stop_script_process("Patching is disabled as per Astraea Webserver - Stopping process", exit_code=0)
 
         
         distribution = get_distribution()
