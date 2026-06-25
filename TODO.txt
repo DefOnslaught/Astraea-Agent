@@ -1,7 +1,3 @@
-
-** Have a method where if the UUID saved is invalid, we can request a new one
-
-
 Features:
     Self updating feature (apart from initialize.py)
         - Could do it like:
@@ -10,10 +6,3 @@ Features:
             - Update script stops the python program from running, extracts the tar
                 - May need a failsafe to ensure .env is ok, or include log message
             - run the initialize.py as intended, maybe pass in a variable to skip checking for updates this time
-
-
-Zabbix info:
-
-    For security, astraea webserver should send the calls to zabbix. 
-        - Start of patching, 'can_i_patch()' backend sees it, sends celery task to handle setting maintenance mode
-        - When the 'send_patch' function is done, backend sees it, creates celery task with a timer for 5 minutes (To allow for rebooting), to remove the maintenance window

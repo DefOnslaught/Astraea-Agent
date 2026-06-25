@@ -25,6 +25,7 @@ def send_system_info():
         "os_version": get_os_version(),
         "uptime": get_uptime(),
         "last_reboot": datetime.datetime.fromtimestamp(psutil.boot_time(), tz=timezone.utc).isoformat(),
+        "was_rebooted": False,
         "patch_schedule": PATCH_SCHEDULE,
         "env": ENV,
         "disable_autoremove": DISABLE_AUTOREMOVE,
@@ -49,6 +50,8 @@ def send_patch_result(getting_rebooted=False, patching_status="success", errors=
         log_message(f"Missing BASE_URL or API_KEY in .env, skipping Astraea Webserver info upload")
         return
 
+    # If we are rebooting, get the current time
+    # Else, display the uptime of the server
     if getting_rebooted:
         last_reboot = datetime.datetime.now(timezone.utc).isoformat()
     else:
@@ -63,12 +66,15 @@ def send_patch_result(getting_rebooted=False, patching_status="success", errors=
                 "new_version": versions.get("new_version")
             })
 
+    reboot_bool = bool(getting_rebooted)
+
     payload = {
         "server_id": UUID,
         "hostname": get_fqdn(),
         "os_version": get_os_version(),
         "uptime": get_uptime(),
         "last_reboot": last_reboot,
+        "was_rebooted": reboot_bool,
         "patch_schedule": PATCH_SCHEDULE,
         "env": ENV,
         "disable_autoremove": DISABLE_AUTOREMOVE,
@@ -95,6 +101,14 @@ def _send_payload(url, payload):
     """
 
     headers = {"X-API-Key": API_KEY, "Content-Type": "application/json"}
+
+    if not payload.get("server_id"):
+        log_message("Error: Missing Server UUID. Aborting upload.")
+        return False
+
+    # Ensure interfaces is actually a list if the helper function returns None
+    if payload["interfaces"] is None:
+        payload["interfaces"] = []
 
     for attempt in range(1, MAX_RETRIES + 1):
         try:
