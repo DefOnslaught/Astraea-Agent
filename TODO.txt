@@ -1,8 +1,0 @@
-Features:
-    Self updating feature (apart from initialize.py)
-        - Could do it like:
-            - if update is found, download tar and update script
-            - Run update script
-            - Update script stops the python program from running, extracts the tar
-                - May need a failsafe to ensure .env is ok, or include log message
-            - run the initialize.py as intended, maybe pass in a variable to skip checking for updates this time
