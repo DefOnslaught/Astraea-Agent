@@ -110,6 +110,44 @@ def update_env_uuid(uuid_value):
         f.writelines(new_lines)
     init_log_message(f"UUID {uuid_value} saved to .env", level="INFO")
 
+def get_version():
+    """Gets the version from version.txt, creating it with a baseline if it doesn't exist"""
+    version_file = _BASE_DIR / "version.txt"
+    
+    if not version_file.exists():
+        try:
+            with open(version_file, "w") as f:
+                f.write("version=0.0.0\n")
+            init_log_message("version.txt not found. Created initial version file with version=0.0.0", level="INFO")
+        except Exception as e:
+            init_log_message(f"Failed to create version.txt: {e}", level="ERROR")
+        return "0.0.0"
+    
+    try:
+        with open(version_file, "r") as f:
+            for line in f:
+                if line.strip().startswith("version="):
+                    return line.strip().split("=", 1)[1].strip().strip("'").strip('"')
+    except Exception as e:
+        init_log_message(f"Error reading version.txt: {e}", level="ERROR")
+        
+    return "0.0.0"
+
+def parse_version(version_str):
+    """Converts a semantic version string into a padded tuple of integers (Major, Minor, Patch)."""
+    if not version_str:
+        return (0, 0, 0)
+    try:
+        parts = list(map(int, version_str.split('.')))
+        
+        while len(parts) < 3:
+            parts.append(0)
+            
+        return tuple(parts)
+    except ValueError:
+        init_log_message(f"Warning: Non-standard version format detected: {version_str}", level="WARNING")
+        return (0, 0, 0)
+
 def stop_init_script_process(msg, level="INFO", exit_code = 0):
     """Writes to the initialize log, closes the log, then exits the script with a default code of 0"""
     init_log_message(msg, level)

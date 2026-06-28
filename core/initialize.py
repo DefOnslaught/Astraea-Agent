@@ -9,7 +9,7 @@ sys.path.insert(0, str(_BASE_DIR))
 
 from initialize_modules.init_log_handler import init_initialize_logger, init_log_message, init_close_logger
 from initialize_modules.utilities import get_distribution, stop_init_script_process
-from initialize_modules.web_utilities import register_server
+from initialize_modules.web_utilities import register_server, check_for_updates
 
 # Basic file/folder variables, rest are located in 'init_log_handler'
 _VENV_DIR = _BASE_DIR / "venv"
@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
     # Don't stop the script if the registration fails, we need to failsafe into patching regardless
     uuid = register_server()
-    #check_for_updates(uuid=uuid)
+    check_for_updates(uuid=uuid)
     
     setup_successful(status)
     
