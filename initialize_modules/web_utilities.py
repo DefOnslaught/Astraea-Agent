@@ -132,7 +132,7 @@ def _download_and_apply_update(download_url, api_key, remote_version):
             init_log_message("Downloaded file is not a valid tar.gz archive. Update aborted.", level="ERROR")
             return False
         
-        source_root = extract_dir / "Astraea Agent"
+        source_root = extract_dir / "Astraea-Agent"
         
         if not source_root.exists():
             init_log_message("Tarball structure invalid: 'Astraea Agent' not found.", level="ERROR")
