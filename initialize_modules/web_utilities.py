@@ -79,6 +79,7 @@ def check_for_updates(uuid):
     remote_version = fetch_remote_version()
 
     if not remote_version or parse_version(remote_version) <= parse_version(local_version):
+        init_log_message(f"No new Astraea Agent Update found.")
         return False
 
     init_log_message("Update found. Preparing to download...")
